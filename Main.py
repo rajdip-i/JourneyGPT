@@ -62,17 +62,14 @@ class UserInteractionAgent:
         Parses user input to extract city, timings, budget, and interests.
         Updates preferences dictionary with extracted information.
         """
-        # Improved regular expression for extracting multi-word city names
         city_match = re.search(r'\b(?:in|to|visit|trip to|trip in|city) ([A-Za-z ]+)', user_input, re.IGNORECASE)
         if city_match:
             self.preferences['city'] = city_match.group(1).strip().title()
 
-        # Extract budget
         budget_match = re.search(r'\$(\d+)', user_input)
         if budget_match:
             self.preferences['budget'] = int(budget_match.group(1))
 
-        # Extract timing or day/time duration for the trip
         timing_match = re.search(r'(morning|afternoon|evening|night|whole day|all day)', user_input, re.IGNORECASE)
         if timing_match:
             self.preferences['timing'] = timing_match.group(1).lower()
@@ -104,18 +101,15 @@ class ItineraryGenerationAgent:
         if not city:
             raise ValueError("City is required to generate an itinerary.")
         
-        # Get the latitude and longitude of the city
         lat, lon = self.get_city_coordinates(city)
         if lat is None or lon is None:
             raise ValueError("Could not find coordinates for the specified city.")
         
-        # Compile itinerary based on interests
         itinerary = []
         for interest in interests:
             places = self.get_places_by_interest(lat, lon, interest, budget)
             itinerary.extend(places)
         
-        # Sort the itinerary by proximity or other factors as needed
         sorted_itinerary = self.sort_itinerary(itinerary)
         return sorted_itinerary
     
@@ -154,8 +148,8 @@ class ItineraryGenerationAgent:
         params = {
             "ll": f"{lat},{lon}",
             "query": interest,
-            "limit": 5,  # Limit the number of results per interest
-            "radius": 5000  # Radius in meters; adjust based on user preferences
+            "limit": 5,  
+            "radius": 5000  
         }
         
         response = requests.get(self.base_url, headers=headers, params=params)
@@ -164,16 +158,14 @@ class ItineraryGenerationAgent:
             print(f"Error fetching data from Foursquare API: {response.status_code}")
             return []
         
-        # Parse the response
         places = response.json().get('results', [])
         filtered_places = []
         
         for place in places:
             name = place.get('name')
             address = place.get('location', {}).get('formatted_address', 'Address not available')
-            price = place.get('price', 0)  # Assumes Foursquare API includes price data
+            price = place.get('price', 0)  
             
-            # Filter based on budget if price information is available
             if budget and price > budget:
                 continue
             
@@ -191,7 +183,6 @@ class ItineraryGenerationAgent:
         Sorts itinerary items based on custom logic, e.g., proximity or type of attraction.
         This is a placeholder and can be enhanced based on additional requirements.
         """
-        # Example: Sort by name for simplicity
         return sorted(itinerary, key=lambda x: x['name'])
 
 class WeatherAgent:
@@ -271,32 +262,26 @@ class MapGenerationAgent:
         """
         Generates an interactive map with itinerary points marked.
         """
-        # Set the initial location for the map as the first item in the itinerary or a default location
         if start_location:
             map_location = start_location
         elif itinerary:
-            # Check if the first item in itinerary has 'latitude' and 'longitude' keys
             first_place = itinerary[0]
             if 'latitude' in first_place and 'longitude' in first_place:
                 map_location = (first_place['latitude'], first_place['longitude'])
             else:
                 print("Latitude and longitude not found for the first place. Using default location.")
-                map_location = (0, 0)  # Default to lat/lon (0, 0)
+                map_location = (0, 0) 
         else:
-            map_location = (0, 0)  # Default location if no itinerary
+            map_location = (0, 0)  
         
-        # Create the map centered at the initial location
         travel_map = folium.Map(location=map_location, zoom_start=13)
 
-        # Add starting location marker, if available
         if start_location:
             folium.Marker(
                 start_location, popup="Starting Point", icon=folium.Icon(color="blue")
             ).add_to(travel_map)
 
-        # Mark each place in the itinerary on the map
         for place in itinerary:
-            # Check for coordinates in each place
             if 'latitude' in place and 'longitude' in place:
                 folium.Marker(
                     [place["latitude"], place["longitude"]],
@@ -306,7 +291,6 @@ class MapGenerationAgent:
             else:
                 print(f"Skipping place '{place.get('name', 'Unnamed Place')}' due to missing coordinates.")
         
-        # Optionally, add a travel path between points
         coordinates = [(place["latitude"], place["longitude"]) for place in itinerary if 'latitude' in place and 'longitude' in place]
         if coordinates:
             folium.PolyLine(coordinates, color="green", weight=2.5, opacity=1).add_to(travel_map)
@@ -332,7 +316,6 @@ class NewsAgent:
         Returns:
             list: A list of headlines or events in the city.
         """
-        # Define the date range for recent news (last 7 days)
         from_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
         to_date = datetime.now().strftime("%Y-%m-%d")
 
@@ -353,7 +336,7 @@ class NewsAgent:
         news_data = response.json()
         headlines = [article["title"] for article in news_data.get("articles", [])]
 
-        return headlines[:5]  # Return top 5 relevant news headlines
+        return headlines[:5]  
     
 
 class MemoryAgent:
@@ -376,7 +359,6 @@ class MemoryAgent:
         Returns:
             list: A list of triplets, where each triplet is a tuple (Entity1, Relationship, Entity2).
         """
-        # Mocked response to simulate LLM-generated triplets.
         if "art" in text and "New York" in text:
             return [("User", "HAS_PREFERENCE", "Art"), ("User", "VISITS", "New York")]
         elif "food" in text:
@@ -392,10 +374,8 @@ class MemoryAgent:
             user_id (str): The unique identifier for the user.
             text (str): The user input text to parse and store as memory triplets.
         """
-        # Generate triplets based on the input text using LLM (mocked here).
         triplets = self.parse_triplets_with_llm(text)
 
-        # Store each triplet in Neo4j
         with self.driver.session() as session:
             for entity1, relationship, entity2 in triplets:
                 session.write_transaction(self._store_triplet, user_id, entity1, relationship, entity2)
@@ -412,7 +392,6 @@ class MemoryAgent:
             relationship (str): The relationship between entities.
             entity2 (str): The second entity in the triplet.
         """
-        # Store the user as a distinct node and connect it to the triplet
         tx.run("""
             MERGE (u:User {user_id: $user_id})
             MERGE (e1:Entity {name: $entity1})
@@ -454,10 +433,8 @@ class MemoryAgent:
         result = tx.run(query, user_id=user_id)
         return list(result)
 
-# Initialize FastAPI app
 app = FastAPI()
 
-# Set up global variables and configurations
 geocode_api_key = "YOUR API KEY"
 weather_api_key = "YOUR API KEY"
 foursquare_api_key = "YOUR API KEY"
@@ -467,7 +444,6 @@ memory_db_user = "YOUR USER ID"
 memory_db_password = "YOUR  PASSWORD"
 
 
-# Initialize agents with API keys
 weather_agent = WeatherAgent(api_key=weather_api_key)
 news_agent = NewsAgent(api_key=news_api_key)
 itinerary_agent = ItineraryGenerationAgent(api_key=foursquare_api_key, geocode_api_key=geocode_api_key)
@@ -476,15 +452,14 @@ map_agent = MapGenerationAgent()
 
 
 
-# Initialize FastAPI app
 app = FastAPI()
 
 
 OLLAMA_MODEL_NAME = "llama3.2"
-OLLAMA_API_URL = "http://localhost:11434/v1/completions"  # Update this to match the correct endpoint
+OLLAMA_API_URL = "http://localhost:11434/v1/completions"  
 
-MAX_RETRIES = 3  # Maximum number of retries for Ollama API requests
-RETRY_DELAY = 2  # Delay in seconds between retries
+MAX_RETRIES = 3  
+RETRY_DELAY = 2  
 chat_history = {}
 
 class ChatRequest(BaseModel):
@@ -505,7 +480,6 @@ def get_ollama_response(user_id: str, message: str, chat_history: list[str]):
     data = response.json()
     return data["choices"][0]["text"] if "choices" in data and data["choices"] else "No response from Ollama."
 
-# Main Chat Endpoint
 @app.post("/chat")
 @app.post("/chat")
 async def chat(request: ChatRequest):
@@ -513,26 +487,22 @@ async def chat(request: ChatRequest):
     user_input = request.message
     user_id = request.user_id
 
-    # Retrieve chat history from Neo4j using MemoryAgent
     chat_history = memory_agent.recall_triplets(user_id)
     chat_history_formatted = [
         f"User: {record[0]}\nAssistant: {record[2]}" for record in chat_history
     ]
 
-    # If there is no chat history, ask for preferences
     if not chat_history:
         response_message = (
             "To get started, could you please share your city, interests, and budget? "
             "For example, you could say, 'I'd like to explore art and food in New York with a budget of $200.'"
         )
-        memory_agent.store_triplets(user_id, user_input)  # Updated to match the method signature
+        memory_agent.store_triplets(user_id, user_input)  
         return {"message": response_message}
 
     try:
-        # Call the LLM with the chat history
         ollama_response = get_ollama_response(user_id, user_input, chat_history_formatted)
 
-        # Based on the LLM's response, decide if an agent should be called
         if "itinerary" in ollama_response.lower():
             city = next((record[2] for record in chat_history if record[1] == "VISITS"), None)
             interests = next((record[2] for record in chat_history if record[1] == "HAS_PREFERENCE"), [])
@@ -541,12 +511,10 @@ async def chat(request: ChatRequest):
             if not city:
                 response_message = "It seems like you haven't mentioned the city you'd like to visit. Could you please specify the city for your itinerary?"
             else:
-                # Generate itinerary with relevant details
                 user_preferences = {"city": city, "interests": interests, "budget": budget}
                 itinerary = itinerary_agent.generate_itinerary(user_preferences)
                 
                 if itinerary:
-                    # Format the itinerary for display
                     formatted_itinerary = "\n".join([
                         f"**{place['name']}** - {place['address']} (Category: {place['category']}, Price: {place['price']})"
                         for place in itinerary
@@ -555,7 +523,7 @@ async def chat(request: ChatRequest):
                 else:
                     response_message = "I'm sorry, I couldn't find any itinerary suggestions based on your preferences."
 
-            memory_agent.store_triplets(user_id, user_input)  # Updated to match the method signature
+            memory_agent.store_triplets(user_id, user_input)  
             return {"message": response_message}
 
         elif "weather" in ollama_response.lower():
@@ -574,7 +542,6 @@ async def chat(request: ChatRequest):
             memory_agent.store_triplets(user_id, user_input)  
             return {"message": response_message, "map": travel_map._repr_html_()}
 
-        # Default response from LLM
         memory_agent.store_triplets(user_id, user_input) 
         return {"message": ollama_response}
 
