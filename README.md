@@ -5,17 +5,18 @@ JourneyGPT is an travel companion powered by LLM agent system. The core of the s
 ## Demo and Screenshots
 
 
- **Homepage and User Details **:
+ ###               Homepage and User Details :
    ![Homepage Screenshot](images/1.png)
+---
 
-
- **Trip Planning Form**:
+ ###                Trip Planning Form:
    ![Trip Form Screenshot](images/2.png)
-
-4. **Generated Itinerary and Interactive Map**:
+   ---
+###              Generated Itinerary and Interactive Map:
    ![Itinerary Screenshot](images/3.png)
+   ---
 
-### Neo4j Database Instance
+###                  Neo4j Database Instance
 - **Connection Overview**:
    ![Neo4j Instance Screenshot](images/4.png)
 
