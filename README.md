@@ -6,20 +6,19 @@ JourneyGPT is an travel companion powered by LLM agent system. The core of the s
 
  
  ###               Homepage and User Details :
-   ![Homepage Screenshot](images/1.png)
+   ![Homepage ](images/1.png)
 ---
 
  ###                Trip Planning Form:
-   ![Trip Form Screenshot](images/2.png)
+   ![Trip Form ](images/2.png)
    ---
 ###              Generated Itinerary and Interactive Map:
-   ![Itinerary Screenshot](images/3.png)
+   ![Itinerary ](images/3.png)
    ---
 
 ###                  Neo4j Database Instance
 - **Connection Overview**:
-   ![Neo4j Instance Screenshot](images/4.png)
-
+![Neo4j Instance Screenshot](images/4.png)
 ---
 
 By leveraging Ollama Llama, JourneyGPT provides personalized and context-aware responses, offering real-time itinerary planning, dynamic user memory management, and seamless interaction. This architecture allows the application to function efficiently even in low-connectivity environments, ensuring a consistent and agent-driven user experience.
