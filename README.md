@@ -4,7 +4,7 @@ JourneyGPT is an travel companion powered by LLM agent system. The core of the s
 
 ## Demo and Screenshots
 
-
+ 
  ###               Homepage and User Details :
    ![Homepage Screenshot](images/1.png)
 ---
