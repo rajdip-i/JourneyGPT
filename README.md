@@ -58,9 +58,7 @@ By combining the power of localized LLM inference with dynamic function executio
    cd journeygpt
    ```
 2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+  
 3. Set up your `.env` file with the required environment variables. Use the placeholders below:
    ```
    NEO4J_URI=your_neo4j_uri
