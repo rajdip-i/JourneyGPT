@@ -20,7 +20,7 @@ JourneyGPT is an travel companion powered by LLM agent system. The core of the s
 - **Connection Overview**:
 ![Neo4j Instance Screenshot](image/4.png)
 ---
-
+ 
 By leveraging Ollama Llama, JourneyGPT provides personalized and context-aware responses, offering real-time itinerary planning, dynamic user memory management, and seamless interaction. This architecture allows the application to function efficiently even in low-connectivity environments, ensuring a consistent and agent-driven user experience.
 
 JourneyGPT also ensures that **user data is securely stored in a Neo4j graph database**. User preferences and memories are retained, allowing the system to prefill trip details and suggestions when the user returns. This personalized approach creates a seamless and intuitive experience for repeat users, saving time and enhancing satisfaction.
