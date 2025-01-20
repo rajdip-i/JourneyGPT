@@ -1,5 +1,5 @@
 # JourneyGPT
-
+ 
 JourneyGPT is an travel companion powered by LLM agent system. The core of the system utilizes Ollama and Llama3.2, a state-of-the-art local large language model (LLM) designed for on-device inference. This ensures high performance while maintaining data privacy, as all computations and decision-making processes occur locally on the user's device.
 
 ## Demo and Screenshots
