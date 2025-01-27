@@ -61,7 +61,7 @@ if user_id:
     st.header("Trip Details")
     with st.form("trip_form"):
         # Autofill values from memory or session state
-        city = st.text_input("City you want to visit:", value=st.session_state.city if "city" in st.session_state else (user_preferences[0] if user_preferences else ""))
+        city = st.text_input("City you want to visit:", value=st.session_state.city if "city" in st.session_state else  "")
         trip_date = st.date_input("Date of your trip:", value=st.session_state.date if "date" in st.session_state else date.today())
         start_time = st.time_input("Start time:", value=st.session_state.start_time if "start_time" in st.session_state else time(9, 0))
         end_time = st.time_input("End time:", value=st.session_state.end_time if "end_time" in st.session_state else time(19, 0))
@@ -195,7 +195,7 @@ if st.session_state.trip_submitted:
        
        
        
-       #Function for to show map 
+       #Function to show map 
 if "city" in st.session_state and st.session_state.city:
     st.header("City Map")
 
