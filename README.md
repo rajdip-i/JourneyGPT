@@ -37,7 +37,7 @@ By combining the power of localized LLM inference with dynamic function executio
 - **Itinerary Generation**: Generate customized itineraries based on user interests, budget, and time constraints.
 - **Weather Integration**: Real-time weather forecasts for better planning.
 - **Local Events Discovery**: Find events in your chosen destination.
-- **Interactive Map Visualization**: Visualize destinations on an interactive map.
+- **Interactive Map Visualization**: Visualize destinations on interactive map.
 
 ---
 
@@ -83,7 +83,7 @@ By combining the power of localized LLM inference with dynamic function executio
 1. **Backend**:
    - Built with FastAPI for RESTful services.
    - Handles memory and preference management using Neo4j.
-   - Integrates weather and event APIs for real-time data.
+   - Integrates weather and event APIs for real-time data.  
 
 2. **Frontend**:
    - Developed using Streamlit.
